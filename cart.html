@@ -1,34 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart - MAJAFFI</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Cart | MAJAFFI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <h1>MAJAFFI</h1>
-        </div>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="products.html">Products</a>
-            <a href="cart.html">Cart (0)</a>
-        </nav>
-    </header>
 
-    <section class="cart">
-        <h2>Your Cart</h2>
-        <div id="cart-items"></div>
-        <p>Total: $<span id="total">0</span></p>
-        <a href="checkout.html" class="btn">Proceed to Checkout</a>
-    </section>
+<header>
+  <h1>MAJAFFI</h1>
+  <nav>
+    <a href="products.html">Products</a>
+  </nav>
+</header>
 
-    <footer>
-        <p>&copy; 2026 MAJAFFI. All Rights Reserved.</p>
-    </footer>
+<h2 style="text-align:center;">Your Cart</h2>
+<div id="cart"></div>
+<h3 style="text-align:center;">Total: ₦<span id="total">0</span></h3>
 
-    <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
