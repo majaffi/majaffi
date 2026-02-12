@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login | MAJAFFI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2 style="text-align:center;">Login</h2>
+
+<div style="text-align:center;">
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+</div>
+
+<script type="module">
+import { auth } from './firebase.js';
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+window.login = function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+  .then(() => {
+    alert("Login successful!");
+    window.location.href = "products.html";
+  })
+  .catch(error => alert(error.message));
+}
+</script>
+
+</body>
+</html>
