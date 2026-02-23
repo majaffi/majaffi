@@ -19,3 +19,25 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+async function loadProducts() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  const productContainer = document.getElementById("product-list");
+
+  productContainer.innerHTML = "";
+
+  querySnapshot.forEach((doc) => {
+    const product = doc.data();
+
+    productContainer.innerHTML += `
+      <div class="product-card">
+        <img src="${product.image}" width="100%">
+        <h3>${product.name}</h3>
+        <p>₦${product.price}</p>
+        <button onclick="addToCart('${doc.id}')">Add to Cart</button>
+      </div>
+    `;
+  });
+}
+
+loadProducts();
