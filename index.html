@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MAJAFFI online store - best deals on gadgets, fashion & accessories in Nigeria">
+<meta name="keywords" content="buy online Nigeria, cheap gadgets Nigeria, fashion store Nigeria">
+<meta name="author" content="MAJAFFI">
+<title>MAJAFFI Store</title>
+
+<meta name="description" content="MAJAFFI online store - best deals on gadgets, fashion & accessories in Nigeria">
+<meta name="keywords" content="buy online Nigeria, gadgets Nigeria, fashion store Nigeria">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family:Poppins, sans-serif;
+  margin:0;
+  background:#f5f5f5;
+}
+
+header{
+  background:#111;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+}
+
+.hero{
+  background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
+  url('https://images.unsplash.com/photo-1607083206869-4c7672e72a8a');
+  background-size:cover;
+  color:white;
+  text-align:center;
+  padding:70px 20px;
+}
+
+.shop-btn{
+  background:#ff6600;
+  padding:12px 25px;
+  color:white;
+  text-decoration:none;
+  border-radius:6px;
+}
+
+.container{
+  padding:20px;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:white;
+  border-radius:15px;
+  padding:15px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.card img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+button{
+  background:#111;
+  color:white;
+  border:none;
+  padding:10px;
+  margin-top:8px;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+#cart{
+  background:white;
+  padding:15px;
+  margin-top:20px;
+  border-radius:10px;
+}
+
+.dark{
+  background:#111;
+  color:#fff;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h2>MAJAFFI</h2>
+<button onclick="toggleDark()">🌙</button>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+<script>
+  
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXX');
+</script>
+</header>
+
+<section class="hero">
+<h1>Welcome to MAJAFFI</h1>
+<p>Shop Quality Products at Unbeatable Prices</p>
+
+<div id="authSection">
+
+<h3>Login / Signup</h3>
+
+<input type="email" id="email" placeholder="Email"><br><br>
+<input type="password" id="password" placeholder="Password"><br><br>
+
+<button onclick="signUp()">Sign Up</button>
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
+
+<p id="userInfo"></p>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+
+<select id="filter" onchange="filterProducts()">
+<option value="all">All</option>
+<option value="fashion">Fashion</option>
+<option value="gadgets">Gadgets</option>
+<option value="shoes">Shoes</option>
+</select>
+<a href="#products" class="shop-btn">Shop Now</a>
+</section>
+
+<div class="container">
+
+<h3 id="products">Products</h3>
+<div class="products" id="productList"></div>
+
+<div id="cart">
+<h3>Cart</h3>
+<ul id="cartItems"></ul>
+<p>Total: ₦<span id="total">0</span></p>
+
+<input id="state" placeholder="Enter State">
+<input id="coupon" placeholder="Coupon code">
+
+<button onclick="applyDiscount()">Apply Coupon</button>
+<button onclick="checkout()">Pay Now</button>
+
+<p>🔒 Secure Payment | 🚚 Fast Delivery | ✅ Trusted Store</p>
+</div>
+
+<h3>Customer Reviews</h3>
+<textarea placeholder="Write review"></textarea>
+<button>Submit</button>
+
+<br><br>
+<a href="https://wa.me/2348069605684" target="_blank">Order via WhatsApp</a>
+<a href="https://instagram.com/YOURNAME" target="_blank">
+Follow us on Instagram
+</a>
+</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<script>
+// DARK MODE
+function toggleDark(){
+ document.body.classList.toggle("dark");
+}
+
+// SAMPLE PRODUCTS (replace with Firebase later)
+const products = [
+ {name:"Smart Watch", price:18000, image:"https://i.imgur.com/2DhmtJ4.jpg"},
+ {name:"Sneakers", price:12000, image:"https://i.imgur.com/eM0B9YQ.jpg"},
+ {name:"Ladies Handbag", price:9500, image:"https://i.imgur.com/QkIa5tT.jpg"}
+];
+
+let cart = [];
+let total = 0;
+
+// DISPLAY PRODUCTS
+const list = document.getElementById("productList");
+
+db.collection("products").get().then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+
+    const product = doc.data();
+
+    let card = document.createElement("div");
+    card.className="card";
+
+    card.innerHTML = `
+      <img src="${product.image}">
+      <h4>${product.name}</h4>
+      <p>₦${product.price}</p>
+      <button onclick='addToCart(${JSON.stringify(product)})'>Add to Cart</button>
+      <button onclick="addWishlist('${product.name}')">❤️</button>
+    `;
+
+    list.appendChild(card);
+
+  });
+
+function filterProducts(){
+ let value = document.getElementById("filter").value;
+ document.querySelectorAll(".card").forEach(card=>{
+   card.style.display =
+   value==="all" || card.dataset.category===value
+   ? "block" : "none";
+ });
+}
+card.dataset.category = product.category;
+// ADD TO CART
+function addToCart(product){
+ cart.push(product);
+ total += product.price;
+ document.getElementById("total").innerText = total;
+
+ const li = document.createElement("li");
+ li.innerText = product.name + " - ₦" + product.price;
+ document.getElementById("cartItems").appendChild(li);
+}
+
+function addWishlist(name){
+ let list = JSON.parse(localStorage.getItem("wish")) || [];
+ list.push(name);
+ localStorage.setItem("wish", JSON.stringify(list));
+ alert("Saved to wishlist");
+}
+
+// DELIVERY FEE
+function deliveryFee(state){
+ if(state.toLowerCase()==="nasarawa") return 1500;
+ if(state.toLowerCase()==="abuja") return 2500;
+ return 3000;
+}
+
+// COUPON
+let discount = 0;
+const codes = {WELCOME10:10, MAJAFFI20:20};
+
+function applyDiscount(){
+ let code = document.getElementById("coupon").value;
+ if(codes[code]){
+   discount = codes[code];
+   alert("Discount Applied");
+ }else{
+   alert("Invalid code");
+ }
+}
+
+const auth = firebase.auth();
+
+// SIGN UP
+function signUp(){
+  auth.createUserWithEmailAndPassword(
+    email.value,
+    password.value
+  ).then(()=>{
+    alert("Account created successfully!");
+  }).catch(error=>{
+    alert(error.message);
+  });
+}
+
+// LOGIN
+function login(){
+  auth.signInWithEmailAndPassword(
+    email.value,
+    password.value
+  ).then(()=>{
+    alert("Login successful!");
+  }).catch(error=>{
+    alert(error.message);
+  });
+}
+
+// LOGOUT
+function logout(){
+  auth.signOut();
+}
+
+// SHOW LOGGED USER
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById("userInfo").innerText =
+      "Logged in as: " + user.email;
+  }else{
+    document.getElementById("userInfo").innerText =
+      "Not logged in";
+  }
+});
+
+auth.onAuthStateChanged(user=>{
+ if(user){
+   db.collection("orders").add({
+     userEmail: user.email,
+     items: cart,
+     total: total,
+     date: new Date()
+   });
+ }
+});
+
+// PAYSTACK CHECKOUT
+function checkout(){
+
+ let state = document.getElementById("state").value;
+ let delivery = deliveryFee(state);
+
+ let finalTotal = total + delivery;
+ finalTotal = finalTotal - (finalTotal * discount / 100);
+
+ var handler = PaystackPop.setup({
+   key: "YOUR_PAYSTACK_PUBLIC_KEY",
+   email: "customer@email.com",
+   amount: finalTotal * 100,
+   currency: "NGN",
+   callback: function(){
+     alert("Payment Successful!");
+   }
+ });
+ db.collection("orders").add({
+ items: cart,
+ total: total,
+ date: new Date()
+});
+
+ handler.openIframe();
+}
+</script>
+
+</body>
+</html>
