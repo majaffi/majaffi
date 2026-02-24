@@ -42,6 +42,10 @@ button{
 
 <button onclick="signup()">Sign Up</button>
 <button onclick="login()">Login</button>
+<button onclick="googleLogin()">Sign in with Google</button>
+<button onclick="logout()">Logout</button>
+
+<p id="userInfo"></p>
 
 <p id="msg"></p>
 </div>
@@ -77,6 +81,27 @@ function login(){
    window.location="index.html";
  })
  .catch(err=> msg.innerHTML=err.message);
+}
+auth.onAuthStateChanged(user => {
+  if(user){
+    document.getElementById("userInfo").innerHTML =
+      "Logged in as " + user.displayName;
+  }
+});
+function googleLogin(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  auth.signInWithPopup(provider)
+  .then(result => {
+    const user = result.user;
+    document.getElementById("userInfo").innerHTML =
+      "Welcome " + user.displayName;
+  })
+  .catch(error => alert(error.message));
+}
+function logout(){
+  auth.signOut();
+  document.getElementById("userInfo").innerHTML = "";
 }
 </script>
 
