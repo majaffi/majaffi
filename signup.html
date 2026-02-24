@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login - MAJAFFI VENTURE</title>
+<title>Sign Up - MAJAFFI VENTURE</title>
 </head>
 <body>
 
-<h2>Login</h2>
+<h2>Create Account</h2>
 
 <input id="email" placeholder="Email"><br><br>
 <input id="password" type="password" placeholder="Password"><br><br>
 
-<button onclick="login()">Login</button>
-<p>Don't have account? <a href="signup.html">Sign up</a></p>
+<button onclick="signup()">Sign Up</button>
+<p>Already have account? <a href="login.html">Login</a></p>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
-<button onclick="googleLogin()">Sign in with Google</button> 
-
-<p onclick="resetPassword()" style="cursor:pointer;color:blue;">
-Forgot Password?
-</p>
 
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyD9KTcTyfrXEb1OY1w_e2m8zwnyxNMcons",
   authDomain: "majaffi-venture2.firebaseapp.com",
-  projectId: "majaffi-venture2",
+  projectId: "majaffi-venture2","
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-function login(){
- auth.signInWithEmailAndPassword(email.value, password.value)
+function signup(){
+ auth.createUserWithEmailAndPassword(email.value, password.value)
  .then(()=>{
-   alert("Login successful");
-   window.location.href = "index.html";
+   alert("Account created!");
+   window.location.href = "login.html";
  })
  .catch(err => alert(err.message));
 }

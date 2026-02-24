@@ -6,7 +6,7 @@
 <meta name="description" content="MAJAFFI online store - best deals on gadgets, fashion & accessories in Nigeria">
 <meta name="keywords" content="buy online Nigeria, cheap gadgets Nigeria, fashion store Nigeria">
 <meta name="author" content="MAJAFFI">
-<title>MAJAFFI Store</title>
+<title>MAJAFFI VENTURE</title>
 
 <meta name="description" content="MAJAFFI online store - best deals on gadgets, fashion & accessories in Nigeria">
 <meta name="keywords" content="buy online Nigeria, gadgets Nigeria, fashion store Nigeria">
@@ -100,22 +100,61 @@ button{
 <body>
 
 <header>
-<h2>MAJAFFI</h2>
+<h2>MAJAFFI VENTURE</h2>
 <button onclick="toggleDark()">🌙</button>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FYXJ7THNTZ"></script>
 <script>
   
+  <button onclick="logout()">Logout</button>
+  
+  <a href="login.html">Login</a>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-XXXX');
+gtag('config', 'G-FYXJ7THNTZ');
+<div class="card"> 
+ </div>
+<style>
+body{
+ font-family:Poppins;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ height:100vh;
+ background:#f5f5f5;
+}
+
+.card{
+ background:white;
+ padding:25px;
+ border-radius:12px;
+ box-shadow:0 6px 18px rgba(0,0,0,0.15);
+ text-align:center;
+ width:300px;
+}
+
+input{
+ width:100%;
+ padding:10px;
+ margin:8px 0;
+}
+
+button{
+ width:100%;
+ padding:10px;
+ background:#111;
+ color:white;
+ border:none;
+ border-radius:6px;
+}
+</style>
 </script>
 </header>
 
 <section class="hero">
-<h1>Welcome to MAJAFFI</h1>
+<h1>Welcome to MAJAFFI VENTURE</h1>
 <p>Shop Quality Products at Unbeatable Prices</p>
 
 <div id="authSection">
@@ -128,11 +167,17 @@ gtag('config', 'G-XXXX');
 <button onclick="signUp()">Sign Up</button>
 <button onclick="login()">Login</button>
 <button onclick="logout()">Logout</button>
+<div id="popup" style="display:none;position:fixed;top:30%;left:20%;background:white;padding:20px;">
+Wait! Get 10% OFF before leaving!
+</div>
 
 <p id="userInfo"></p>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("YOUR_PUBLIC_KEY");
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
 
 <select id="filter" onchange="filterProducts()">
@@ -145,7 +190,7 @@ gtag('config', 'G-XXXX');
 </section>
 
 <div class="container">
-
+<h3 id="timer"></h3>
 <h3 id="products">Products</h3>
 <div class="products" id="productList"></div>
 
@@ -305,6 +350,12 @@ auth.onAuthStateChanged(user=>{
   }
 });
 
+function resetPassword(){
+ auth.sendPasswordResetEmail(email.value)
+ .then(()=>alert("Password reset email sent"))
+ .catch(err=>alert(err.message));
+}
+
 auth.onAuthStateChanged(user=>{
  if(user){
    db.collection("orders").add({
@@ -313,6 +364,24 @@ auth.onAuthStateChanged(user=>{
      total: total,
      date: new Date()
    });
+ }
+});
+
+firebase.auth().onAuthStateChanged(user => {
+ if(user){
+   document.querySelector("header").innerHTML +=
+   "<p>Welcome: " + user.email + "</p>";
+ }
+});
+function logout(){
+  firebase.auth().signOut().then(()=>{
+    alert("Logged out");
+    window.location.href="login.html";
+  });
+}
+firebase.auth().onAuthStateChanged(user => {
+ if(!user){
+   window.location.href = "login.html";
  }
 });
 
@@ -342,6 +411,133 @@ function checkout(){
 
  handler.openIframe();
 }
+function checkout(){
+
+ const user = firebase.auth().currentUser;
+
+ if(!user){
+   alert("Please login first");
+   window.location.href="login.html";
+   return;
+ }
+function googleLogin(){
+ const provider = new firebase.auth.GoogleAuthProvider();
+ auth.signInWithPopup(provider)
+ .then(()=> window.location="index.html");
+}
+const ADMIN_EMAIL = "affison1@email.com";
+
+auth.onAuthStateChanged(user=>{
+ if(user && user.email === ADMIN_EMAIL){
+   alert("Welcome Admin");
+   window.location="admin.html";
+ }
+});
+
+ // continue payment
+}
+
+firebase.auth().onAuthStateChanged(user=>{
+ if(user){
+   db.collection("orders").add({
+     email: user.email,
+     items: cart,
+     total: total,
+     date: new Date(),
+     status: "Pending"
+   });
+ }
+});
+const orderData = {
+  email: user.email,
+  items: cart,
+  total: total,
+  status: "Pending",
+  createdAt: new Date().toISOString()
+};
+
+await db.collection("orders").add(orderData);
+emailjs.send("service_id","template_id",{
+  to_email: user.email,
+  message: "Thank you for shopping with MAJAFFI VENTURE. Order received."
+});
+const msg = `New Order:
+Customer: ${user.email}
+Total: ₦${total}`;
+
+window.open(`https://wa.me/234XXXXXXXXXX?text=${encodeURIComponent(msg)}`);
+db.collection("orders")
+.where("email","==",user.email)
+.get()
+.then(snapshot=>{
+ snapshot.forEach(doc=>{
+   console.log(doc.data().status);
+ });
+});
+function notifyCustomer(status){
+ alert("Order status updated: " + status);
+}
+if(product.stock < 3){
+ console.warn("Low stock:", product.name);
+}
+db.collection("orders").get().then(snapshot=>{
+ let totalSales = 0;
+ snapshot.forEach(doc=>{
+   totalSales += doc.data().total;
+ });
+ console.log("Total Sales ₦", totalSales);
+});
+function getDeliveryFee(location){
+ location = location.toLowerCase();
+
+ if(location.includes("lagos")) return 1500;
+ if(location.includes("abuja")) return 2500;
+ if(location.includes("port harcourt")) return 3000;
+ return 3500;
+}
+let delivery = getDeliveryFee(document.getElementById("location").value);
+function recommendProducts(currentCategory){
+ db.collection("products")
+ .where("category","==",currentCategory)
+ .limit(4)
+ .get()
+ .then(snapshot=>{
+   snapshot.forEach(doc=>{
+     console.log("Recommended:", doc.data().name);
+   });
+ });
+}
+localStorage.setItem("cart", JSON.stringify(cart));
+let savedCart = JSON.parse(localStorage.getItem("cart"));
+if(savedCart){
+ cart = savedCart;
+}
+let time = 3600;
+
+setInterval(()=>{
+ let min = Math.floor(time/60);
+ let sec = time % 60;
+ document.getElementById("timer").innerText =
+ "Flash Sale Ends In: " + min + ":" + sec;
+ time--;
+},1000);
+function reorder(items){
+ cart = items;
+ alert("Items added to cart again");
+}
+<button onclick='reorder(${JSON.stringify(order.items)})'>
+Reorder
+</button>
+let ref = new URLSearchParams(window.location.search).get("ref");
+
+if(ref){
+ localStorage.setItem("referrer", ref);
+}
+document.addEventListener("mouseout", e=>{
+ if(e.clientY < 10){
+   document.getElementById("popup").style.display="block";
+ }
+});
 </script>
 
 </body>

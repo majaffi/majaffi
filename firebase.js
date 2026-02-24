@@ -7,18 +7,19 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyB1WGfGyzG8nCbiRqKwLbmAqHiFuxf5QyY",
-  authDomain: "majaffi-platform.firebaseapp.com",
-  projectId: "majaffi-platform",
-  storageBucket: "majaffi-platform.firebasestorage.app",
-  messagingSenderId: "1044333099678",
-  appId: "1:1044333099678:web:7a4bee30339f7d7033598f",
-  measurementId: "G-4087HL56RF"
+  apiKey: "AIzaSyD9KTcTyfrXEb1OY1w_e2m8zwnyxNMcons",
+  authDomain: "majaffi-venture2.firebaseapp.com",
+  projectId: "majaffi-venture2",
+  storageBucket: "majaffi-venture2.firebasestorage.app",
+  messagingSenderId: "101326202999",
+  appId: "1:101326202999:web:4825cd888f70549a223e72",
+  measurementId: "G-FYXJ7THNTZ"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
 async function loadProducts() {
   const querySnapshot = await getDocs(collection(db, "products"));
   const productContainer = document.getElementById("product-list");
