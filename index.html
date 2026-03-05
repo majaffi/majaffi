@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MAJAFFI VENTURE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h2>MAJAFFI VENTURE</h2>
+  <nav>
+    <a href="cart.html">🛒 Cart</a>
+    <a href="login.html">Login</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<!-- SEARCH BAR -->
+<div class="container">
+  <input id="search" placeholder="Search products..." oninput="searchProducts()">
+</div>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <img src="https://via.placeholder.com/1200x300?text=Welcome+to+MajaFFI+Venture" alt="Banner" width="100%">
+</div>
+
+<!-- PRODUCT CATEGORIES -->
+<div class="container">
+  <h3>Categories</h3>
+  <div class="categories">
+    <button onclick="filterCategory('Electronics')">Electronics</button>
+    <button onclick="filterCategory('Fashion')">Fashion</button>
+    <button onclick="filterCategory('Home')">Home</button>
+    <button onclick="filterCategory('Gadgets')">Gadgets</button>
+  </div>
+</div>
+
+<!-- FEATURED DEALS -->
+<div class="container">
+  <h3>Featured Deals</h3>
+  <div class="row" id="featuredDeals"></div>
+</div>
+
+<!-- TRENDING PRODUCTS -->
+<div class="container">
+  <h3>Trending Products</h3>
+  <div class="row" id="products"></div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

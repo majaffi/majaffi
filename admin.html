@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h2>Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+  <h3>Add Product</h3>
+  <input id="name" placeholder="Product Name">
+  <input id="price" placeholder="Price">
+  <input id="image" placeholder="Image URL">
+  <input id="category" placeholder="Category">
+  <label><input type="checkbox" id="featured"> Featured</label>
+  <label><input type="checkbox" id="trending"> Trending</label>
+  <label><input type="checkbox" id="flash"> Flash Deal</label>
+  <input id="reviews" placeholder="Reviews (0-5)">
+  <button onclick="addProduct()">Upload Product</button>
+</div>
+
+<div class="container">
+  <h3>All Products</h3>
+  <div id="allProducts"></div>
+</div>
+
+<div class="container">
+  <h3>All Orders</h3>
+  <div id="allOrders"></div>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>
