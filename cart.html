@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header><h2>Your Cart</h2></header>
+
+<div class="container" id="cartItems"></div>
+<button onclick="checkout()">Checkout</button>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+const container = document.getElementById("cartItems");
+
+function renderCart() {
+  container.innerHTML = "";
+  cart.forEach(item => {
+    container.innerHTML += `<p>${item.name} - ₦${item.price}</p>`;
+  });
+}
+
+function checkout() {
+  import { usePaystackPayment } from "react-paystack";
+import { auth, db, collection, addDoc } from "./firebase.js";
+
+// Prepare cart total
+const totalAmount = cart.reduce((sum, item) => sum + item.price, 0) * 100; // in kobo
+
+const config = {
+  reference: new Date().getTime().toString(),
+  email: auth.currentUser?.email,
+  amount: totalAmount,
+  publicKey: "YOUR_PAYSTACK_PUBLIC_KEY",
+};
+
+const onSuccess = async () => {
+  // Save each product order in Firestore
+  for (let item of cart) {
+    await addDoc(collection(db, "orders"), {
+      email: auth.currentUser.email,
+      product: item,
+      status: "Processing",
+      createdAt: new Date()
+    });
+  }
+  alert("Payment successful! Orders saved.");
+  localStorage.removeItem("cart");
+  location.href = "index.html";
+};
+
+const onClose = () => {
+  alert("Payment was not completed.");
+};
+
+const initializePayment = usePaystackPayment(config);
+
+// Call inside checkout
+function checkout() {
+  initializePayment(onSuccess, onClose);
+}
+alert("Ready for Paystack integration");
+}
+
+renderCart();
+</script>
+</body>
+</html>
